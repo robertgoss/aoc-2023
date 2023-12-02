@@ -4,7 +4,7 @@ use std::io::BufRead;
 
 
 pub fn input_as_lines(day: i8) -> Vec<String> {
-    let filename = format!("../data/day-{}.txt", day);
+    let filename = format!("data/day-{}.txt", day);
     let file = File::open(filename).expect("Issue opening file");
     let reader = BufReader::new(&file);
     reader.lines().map(
@@ -13,7 +13,7 @@ pub fn input_as_lines(day: i8) -> Vec<String> {
 }
 
 pub fn input_as_string(day: i8) -> String {
-    let filename = format!("../data/day-{}.txt", day);
+    let filename = format!("data/day-{}.txt", day);
     read_to_string(filename).expect("Read failure")
 }
 
