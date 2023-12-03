@@ -1,4 +1,4 @@
-fn is_num(ch: char) -> Option<u8> {
+pub fn is_num(ch: char) -> Option<u8> {
     match ch {
         '0' => Some(0),
         '1' => Some(1),
