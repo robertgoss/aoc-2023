@@ -36,6 +36,12 @@ mod challenge {
         println!("{:?}", engine.sum_part_numbers());
     }
 
+    fn challenge_6() {
+        let data = io::input_as_lines(3);
+        let engine = parts::Engine::from_lines(&data);
+        println!("{:?}", engine.sum_gears());
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -43,13 +49,14 @@ mod challenge {
             3 => challenge_3(),
             4 => challenge_4(),
             5 => challenge_5(),
+            6 => challenge_6(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "5".to_string();
+    let default = "6".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);

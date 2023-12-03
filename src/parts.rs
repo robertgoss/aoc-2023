@@ -10,9 +10,15 @@ struct PartNumber {
 }
 
 #[derive(Debug)]
+struct Gear {
+    base: Point,
+    nums: (PartNumber, PartNumber),
+}
+
+#[derive(Debug)]
 pub struct Engine {
-    symbols: HashSet<Point>,
     part_numbers: Vec<PartNumber>,
+    gears: Vec<Gear>,
 }
 
 fn is_symbol(ch: &char) -> bool {
@@ -23,6 +29,14 @@ fn symbols_from_line(line: &str, i: usize) -> Vec<Point> {
     line.chars()
         .enumerate()
         .filter(|(_, ch)| is_symbol(ch))
+        .map(|(j, _)| (i, j))
+        .collect()
+}
+
+fn star_from_line(line: &str, i: usize) -> Vec<Point> {
+    line.chars()
+        .enumerate()
+        .filter(|(_, ch)| *ch == '*')
         .map(|(j, _)| (i, j))
         .collect()
 }
@@ -44,6 +58,9 @@ fn part_nums_from_line(line: &str, i: usize) -> Vec<PartNumber> {
             }
         }
     }
+    if let Some(num) = &opt_num {
+        nums.push(num.clone());
+    }
     nums
 }
 
@@ -59,6 +76,15 @@ impl PartNumber {
     fn extend(&mut self, val: u8) {
         self.length += 1;
         self.value = (self.value * 10) + (val as u32);
+    }
+
+    fn adjacent_pt(&self, pt: &Point) -> bool {
+        let dx = pt.0 as i32 - self.base.0 as i32;
+        if dx < -1 || dx > 1 {
+            return false;
+        }
+        let dy = pt.1 as i32 - self.base.1 as i32;
+        dy >= -1 && dy <= (self.length as i32)
     }
 
     fn adjacent_symbol(&self, symbols: &HashSet<Point>) -> bool {
@@ -83,6 +109,24 @@ impl PartNumber {
     }
 }
 
+impl Gear {
+    fn from_pt(pt: Point, parts: &Vec<PartNumber>) -> Option<Gear> {
+        let adj: Vec<PartNumber> = parts
+            .iter()
+            .filter(|part| part.adjacent_pt(&pt))
+            .cloned()
+            .collect();
+        if adj.len() == 2 {
+            Some(Gear {
+                base: pt,
+                nums: (adj[0].clone(), adj[1].clone()),
+            })
+        } else {
+            None
+        }
+    }
+}
+
 impl Engine {
     pub fn from_lines(lines: &Vec<String>) -> Engine {
         let symbols: HashSet<Point> = lines
@@ -101,9 +145,19 @@ impl Engine {
             .into_iter()
             .filter(|number| number.adjacent_symbol(&symbols))
             .collect();
+        let stars: Vec<Point> = lines
+            .iter()
+            .enumerate()
+            .map(|(i, line)| star_from_line(line, i))
+            .flatten()
+            .collect();
+        let gears = stars
+            .into_iter()
+            .filter_map(|pt| Gear::from_pt(pt, &part_numbers))
+            .collect();
         Engine {
-            symbols,
             part_numbers,
+            gears,
         }
     }
 
@@ -111,6 +165,13 @@ impl Engine {
         self.part_numbers
             .iter()
             .map(|number| number.value as usize)
+            .sum()
+    }
+
+    pub fn sum_gears(&self) -> usize {
+        self.gears
+            .iter()
+            .map(|gear| gear.nums.0.value as usize * gear.nums.1.value as usize)
             .sum()
     }
 }
