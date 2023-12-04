@@ -3,6 +3,7 @@ extern crate core;
 mod calibration;
 mod io;
 mod parts;
+mod scratchcards;
 mod snow_game;
 
 mod challenge {
@@ -42,6 +43,18 @@ mod challenge {
         println!("{:?}", engine.sum_gears());
     }
 
+    fn challenge_7() {
+        let data = io::input_as_lines(4);
+        let cards = scratchcards::ScratchCards::from_lines(&data).unwrap();
+        println!("{:?}", cards.winnings());
+    }
+
+    fn challenge_8() {
+        let data = io::input_as_lines(4);
+        let cards = scratchcards::ScratchCards::from_lines(&data).unwrap();
+        println!("{:?}", cards.winning_scratchcards());
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -50,13 +63,15 @@ mod challenge {
             4 => challenge_4(),
             5 => challenge_5(),
             6 => challenge_6(),
+            7 => challenge_7(),
+            8 => challenge_8(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "6".to_string();
+    let default = "8".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
