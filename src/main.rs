@@ -63,6 +63,12 @@ mod challenge {
         println!("{:?}", almanac.least_site());
     }
 
+    fn challenge_10() {
+        let data = io::input_as_string(0);
+        let almanac = seeds::Almanac::from_string(&data).unwrap();
+        println!("{:?}", almanac.least_site_ranges());
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -74,13 +80,14 @@ mod challenge {
             7 => challenge_7(),
             8 => challenge_8(),
             9 => challenge_9(),
+            10 => challenge_10(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "9".to_string();
+    let default = "10".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
