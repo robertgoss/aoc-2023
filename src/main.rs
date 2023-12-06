@@ -1,9 +1,11 @@
+#![feature(btree_cursors)]
 extern crate core;
 
 mod calibration;
 mod io;
 mod parts;
 mod scratchcards;
+mod seeds;
 mod snow_game;
 
 mod challenge {
@@ -55,6 +57,12 @@ mod challenge {
         println!("{:?}", cards.winning_scratchcards());
     }
 
+    fn challenge_9() {
+        let data = io::input_as_string(5);
+        let almanac = seeds::Almanac::from_string(&data).unwrap();
+        println!("{:?}", almanac.least_site());
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -65,13 +73,14 @@ mod challenge {
             6 => challenge_6(),
             7 => challenge_7(),
             8 => challenge_8(),
+            9 => challenge_9(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "8".to_string();
+    let default = "9".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);

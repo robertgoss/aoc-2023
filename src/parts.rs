@@ -11,7 +11,6 @@ struct PartNumber {
 
 #[derive(Debug)]
 struct Gear {
-    base: Point,
     nums: (PartNumber, PartNumber),
 }
 
@@ -118,7 +117,6 @@ impl Gear {
             .collect();
         if adj.len() == 2 {
             Some(Gear {
-                base: pt,
                 nums: (adj[0].clone(), adj[1].clone()),
             })
         } else {
