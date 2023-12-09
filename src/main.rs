@@ -4,6 +4,7 @@ extern crate core;
 mod calibration;
 mod io;
 mod parts;
+mod race;
 mod scratchcards;
 mod seeds;
 mod snow_game;
@@ -64,9 +65,22 @@ mod challenge {
     }
 
     fn challenge_10() {
+        // TODO - Debug and fix
         let data = io::input_as_string(0);
         let almanac = seeds::Almanac::from_string(&data).unwrap();
         println!("{:?}", almanac.least_site_ranges());
+    }
+
+    fn challenge_11() {
+        let data = io::input_as_lines(6);
+        let races = race::Races::from_lines(&data).unwrap();
+        println!("{:?}", races.score());
+    }
+
+    fn challenge_12() {
+        let data = io::input_as_lines(6);
+        let race = race::Race::from_lines(&data).unwrap();
+        println!("{:?}", race.num_success());
     }
 
     pub fn challenge(num: u8) {
@@ -81,13 +95,15 @@ mod challenge {
             8 => challenge_8(),
             9 => challenge_9(),
             10 => challenge_10(),
+            11 => challenge_11(),
+            12 => challenge_12(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "10".to_string();
+    let default = "12".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
