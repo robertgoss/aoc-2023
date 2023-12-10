@@ -2,6 +2,7 @@
 extern crate core;
 
 mod calibration;
+mod cards;
 mod io;
 mod parts;
 mod race;
@@ -83,6 +84,12 @@ mod challenge {
         println!("{:?}", race.num_success());
     }
 
+    fn challenge_13() {
+        let data = io::input_as_lines(7);
+        let game = cards::Game::from_lines(&data).unwrap();
+        println!("{:?}", game.winnings());
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -97,13 +104,14 @@ mod challenge {
             10 => challenge_10(),
             11 => challenge_11(),
             12 => challenge_12(),
+            13 => challenge_13(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "12".to_string();
+    let default = "13".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
