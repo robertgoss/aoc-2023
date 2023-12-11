@@ -4,6 +4,7 @@ extern crate core;
 mod calibration;
 mod cards;
 mod io;
+mod map;
 mod parts;
 mod race;
 mod scratchcards;
@@ -96,6 +97,18 @@ mod challenge {
         println!("{:?}", game.winnings());
     }
 
+    fn challenge_15() {
+        let data = io::input_as_string(8);
+        let map = map::Map::from_string(&data).unwrap();
+        println!("{:?}", map.num_steps());
+    }
+
+    fn challenge_16() {
+        let data = io::input_as_string(8);
+        let map = map::Map::from_string(&data).unwrap();
+        println!("{:?}", map.num_steps_ghost());
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -112,13 +125,15 @@ mod challenge {
             12 => challenge_12(),
             13 => challenge_13(),
             14 => challenge_14(),
+            15 => challenge_15(),
+            16 => challenge_16(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "14".to_string();
+    let default = "16".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
