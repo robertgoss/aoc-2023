@@ -9,6 +9,7 @@ mod parts;
 mod race;
 mod scratchcards;
 mod seeds;
+mod sequences;
 mod snow_game;
 
 mod challenge {
@@ -109,6 +110,18 @@ mod challenge {
         println!("{:?}", map.num_steps_ghost());
     }
 
+    fn challenge_17() {
+        let data = io::input_as_lines(9);
+        let gens = sequences::SequenceGens::from_lines(&data).unwrap();
+        println!("{:?}", gens.next_sum());
+    }
+
+    fn challenge_18() {
+        let data = io::input_as_lines(9);
+        let gens = sequences::SequenceGens::from_lines(&data).unwrap();
+        println!("{:?}", gens.prev_sum());
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -127,13 +140,15 @@ mod challenge {
             14 => challenge_14(),
             15 => challenge_15(),
             16 => challenge_16(),
+            17 => challenge_17(),
+            18 => challenge_18(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "16".to_string();
+    let default = "18".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
