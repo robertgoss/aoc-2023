@@ -3,12 +3,13 @@ use std::collections::HashMap;
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Copy, Clone, Hash)]
 enum Card {
-    A,
-    K,
-    Q,
-    J,
-    T,
+    WildJack,
     Num(u8),
+    T,
+    J,
+    Q,
+    K,
+    A,
 }
 
 #[derive(Ord, PartialOrd, Eq, PartialEq)]
@@ -23,12 +24,18 @@ enum HandType {
 }
 
 impl Card {
-    fn from_char(ch: char) -> Option<Card> {
+    fn from_char(ch: char, wild_jack: bool) -> Option<Card> {
         match ch {
             'A' => Some(Card::A),
             'K' => Some(Card::K),
             'Q' => Some(Card::Q),
-            'J' => Some(Card::J),
+            'J' => {
+                if wild_jack {
+                    Some(Card::WildJack)
+                } else {
+                    Some(Card::J)
+                }
+            }
             'T' => Some(Card::T),
             '9' => Some(Card::Num(9)),
             '8' => Some(Card::Num(8)),
@@ -51,11 +58,11 @@ struct Hand {
 }
 
 impl Hand {
-    pub fn from_line(line: &str) -> Option<Hand> {
+    pub fn from_line(line: &str, wild_jack: bool) -> Option<Hand> {
         let (cards_str, bid_str) = line.split_once(" ")?;
         let cards_vec = cards_str
             .chars()
-            .map(|ch| Card::from_char(ch))
+            .map(|ch| Card::from_char(ch, wild_jack))
             .collect::<Option<Vec<Card>>>()?;
         if cards_vec.len() != 5 {
             return None;
@@ -88,6 +95,16 @@ impl Hand {
                 .entry(card.clone())
                 .and_modify(|v| *v += 1)
                 .or_insert(1);
+        }
+        if let Some(wild_size) = card_counts.remove(&Card::WildJack) {
+            if let Some(&max) = card_counts.values().max() {
+                for (card, count) in card_counts.iter_mut() {
+                    if *count == max {
+                        *count += wild_size;
+                        break;
+                    }
+                }
+            }
         }
         let counts: Vec<usize> = card_counts.values().cloned().collect();
         if counts.len() == 1 {
@@ -126,7 +143,7 @@ impl Ord for Hand {
         if type_cmp != Ordering::Equal {
             type_cmp
         } else {
-            self.cards.cmp(&other.cards)
+            self.cards.cmp(&other.cards).reverse()
         }
     }
 }
@@ -136,10 +153,10 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn from_lines(lines: &Vec<String>) -> Option<Game> {
+    pub fn from_lines(lines: &Vec<String>, wild_jack: bool) -> Option<Game> {
         let mut hands = lines
             .iter()
-            .map(|line| Hand::from_line(line))
+            .map(|line| Hand::from_line(line, wild_jack))
             .collect::<Option<Vec<Hand>>>()?;
         hands.sort();
         Some(Game { hands })

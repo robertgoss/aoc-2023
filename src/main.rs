@@ -86,7 +86,13 @@ mod challenge {
 
     fn challenge_13() {
         let data = io::input_as_lines(7);
-        let game = cards::Game::from_lines(&data).unwrap();
+        let game = cards::Game::from_lines(&data, false).unwrap();
+        println!("{:?}", game.winnings());
+    }
+
+    fn challenge_14() {
+        let data = io::input_as_lines(7);
+        let game = cards::Game::from_lines(&data, true).unwrap();
         println!("{:?}", game.winnings());
     }
 
@@ -105,13 +111,14 @@ mod challenge {
             11 => challenge_11(),
             12 => challenge_12(),
             13 => challenge_13(),
+            14 => challenge_14(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "13".to_string();
+    let default = "14".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
