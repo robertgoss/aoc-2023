@@ -28,10 +28,6 @@ impl Ranges {
     fn min(&self) -> usize {
         self.vals.iter().map(|(x, _)| *x).min().unwrap()
     }
-
-    fn max(&self) -> usize {
-        self.vals.iter().map(|(_, x)| *x).max().unwrap()
-    }
 }
 
 impl RangeMap {

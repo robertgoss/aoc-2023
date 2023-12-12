@@ -1,5 +1,3 @@
-use std::cmp::max_by;
-
 pub struct Race {
     time: usize,
     distance: usize,

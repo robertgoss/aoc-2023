@@ -6,6 +6,7 @@ mod cards;
 mod io;
 mod map;
 mod parts;
+mod pipes;
 mod race;
 mod scratchcards;
 mod seeds;
@@ -122,6 +123,18 @@ mod challenge {
         println!("{:?}", gens.prev_sum());
     }
 
+    fn challenge_19() {
+        let data = io::input_as_grid(10);
+        let pipes = pipes::Pipes::from_grid(&data);
+        println!("{:?}", pipes.max_distance());
+    }
+
+    fn challenge_20() {
+        let data = io::input_as_grid(0);
+        let pipes = pipes::Pipes::from_grid(&data);
+        println!("{:?}", pipes.enclosed());
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -142,13 +155,15 @@ mod challenge {
             16 => challenge_16(),
             17 => challenge_17(),
             18 => challenge_18(),
+            19 => challenge_19(),
+            20 => challenge_20(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "18".to_string();
+    let default = "20".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);

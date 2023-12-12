@@ -75,7 +75,7 @@ impl Hand {
             cards_vec[4],
         ];
         let bid = bid_str.parse::<usize>().ok()?;
-        let mut hand = Hand {
+        let hand = Hand {
             cards,
             bid,
             hand_type_cache: HandType::FullHouse,
@@ -98,7 +98,7 @@ impl Hand {
         }
         if let Some(wild_size) = card_counts.remove(&Card::WildJack) {
             if let Some(&max) = card_counts.values().max() {
-                for (card, count) in card_counts.iter_mut() {
+                for (_, count) in card_counts.iter_mut() {
                     if *count == max {
                         *count += wild_size;
                         break;
