@@ -75,7 +75,7 @@ pub struct Pipes {
 
 impl Pipes {
     pub fn from_grid(grid: &HashMap<(i64, i64), char>) -> Pipes {
-        let pipes = grid
+        let pipes: HashMap<(i64, i64), Pipe> = grid
             .iter()
             .filter_map(|((i, j), ch)| Pipe::from_char(*ch).map(|pipe| ((*i, *j), pipe)))
             .collect();

@@ -3,6 +3,7 @@ extern crate core;
 
 mod calibration;
 mod cards;
+mod galaxy;
 mod io;
 mod map;
 mod parts;
@@ -135,6 +136,18 @@ mod challenge {
         println!("{:?}", pipes.enclosed());
     }
 
+    fn challenge_21() {
+        let data = io::input_as_grid(11);
+        let galaxy = galaxy::Galaxy::from_grid(2, &data);
+        println!("{:?}", galaxy.sum_dist());
+    }
+
+    fn challenge_22() {
+        let data = io::input_as_grid(11);
+        let galaxy = galaxy::Galaxy::from_grid(1000000, &data);
+        println!("{:?}", galaxy.sum_dist());
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -157,13 +170,15 @@ mod challenge {
             18 => challenge_18(),
             19 => challenge_19(),
             20 => challenge_20(),
+            21 => challenge_21(),
+            22 => challenge_22(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "20".to_string();
+    let default = "22".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
