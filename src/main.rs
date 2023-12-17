@@ -1,6 +1,7 @@
 #![feature(btree_cursors)]
 extern crate core;
 
+mod beams;
 mod calibration;
 mod cards;
 mod galaxy;
@@ -161,6 +162,18 @@ mod challenge {
         println!("{:?}", caves.score_smudge());
     }
 
+    fn challenge_27() {
+        let data = io::input_as_grid(14);
+        let mut beam = beams::Beam::from_grid(&data);
+        println!("{:?}", beam.score_north());
+    }
+
+    fn challenge_28() {
+        let data = io::input_as_grid(14);
+        let mut beam = beams::Beam::from_grid(&data);
+        println!("{:?}", beam.score_spin(1000000000));
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -187,13 +200,15 @@ mod challenge {
             22 => challenge_22(),
             25 => challenge_25(),
             26 => challenge_26(),
+            27 => challenge_27(),
+            28 => challenge_28(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "26".to_string();
+    let default = "28".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
