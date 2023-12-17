@@ -1,10 +1,13 @@
 #![feature(btree_cursors)]
+#![feature(ascii_char)]
+#![feature(inline_const)]
 extern crate core;
 
 mod beams;
 mod calibration;
 mod cards;
 mod galaxy;
+mod hash;
 mod io;
 mod map;
 mod mirrors;
@@ -174,6 +177,18 @@ mod challenge {
         println!("{:?}", beam.score_spin(1000000000));
     }
 
+    fn challenge_29() {
+        let data = io::input_as_string(15);
+        let commands = hash::Commands::from_line(&data);
+        println!("{:?}", commands.hash_sum());
+    }
+
+    fn challenge_30() {
+        let data = io::input_as_string(15);
+        let boxes = hash::Boxes::from_line(&data);
+        println!("{:?}", boxes.focus_power_sum());
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -202,13 +217,15 @@ mod challenge {
             26 => challenge_26(),
             27 => challenge_27(),
             28 => challenge_28(),
+            29 => challenge_29(),
+            30 => challenge_30(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "28".to_string();
+    let default = "30".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
