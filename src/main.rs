@@ -6,6 +6,7 @@ mod cards;
 mod galaxy;
 mod io;
 mod map;
+mod mirrors;
 mod parts;
 mod pipes;
 mod race;
@@ -148,6 +149,18 @@ mod challenge {
         println!("{:?}", galaxy.sum_dist());
     }
 
+    fn challenge_25() {
+        let data = io::input_as_grids(13);
+        let caves = mirrors::Caves::from_grids(&data);
+        println!("{:?}", caves.score());
+    }
+
+    fn challenge_26() {
+        let data = io::input_as_grids(13);
+        let caves = mirrors::Caves::from_grids(&data);
+        println!("{:?}", caves.score_smudge());
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -172,13 +185,15 @@ mod challenge {
             20 => challenge_20(),
             21 => challenge_21(),
             22 => challenge_22(),
+            25 => challenge_25(),
+            26 => challenge_26(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "22".to_string();
+    let default = "26".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
