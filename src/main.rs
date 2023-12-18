@@ -6,6 +6,7 @@ extern crate core;
 mod beams;
 mod calibration;
 mod cards;
+mod cave;
 mod galaxy;
 mod hash;
 mod io;
@@ -155,13 +156,13 @@ mod challenge {
 
     fn challenge_25() {
         let data = io::input_as_grids(13);
-        let caves = mirrors::Caves::from_grids(&data);
+        let caves = cave::Caves::from_grids(&data);
         println!("{:?}", caves.score());
     }
 
     fn challenge_26() {
         let data = io::input_as_grids(13);
-        let caves = mirrors::Caves::from_grids(&data);
+        let caves = cave::Caves::from_grids(&data);
         println!("{:?}", caves.score_smudge());
     }
 
@@ -187,6 +188,18 @@ mod challenge {
         let data = io::input_as_string(15);
         let boxes = hash::Boxes::from_line(&data);
         println!("{:?}", boxes.focus_power_sum());
+    }
+
+    fn challenge_31() {
+        let data = io::input_as_grid(16);
+        let cave = mirrors::MirrorCave::from_grid(&data);
+        println!("{:?}", cave.simulate_excited());
+    }
+
+    fn challenge_32() {
+        let data = io::input_as_grid(16);
+        let cave = mirrors::MirrorCave::from_grid(&data);
+        println!("{:?}", cave.max_simulate_excited());
     }
 
     pub fn challenge(num: u8) {
@@ -219,13 +232,15 @@ mod challenge {
             28 => challenge_28(),
             29 => challenge_29(),
             30 => challenge_30(),
+            31 => challenge_31(),
+            32 => challenge_32(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "30".to_string();
+    let default = "32".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
