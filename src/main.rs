@@ -7,6 +7,7 @@ mod beams;
 mod calibration;
 mod cards;
 mod cave;
+mod crucible;
 mod galaxy;
 mod hash;
 mod io;
@@ -202,6 +203,18 @@ mod challenge {
         println!("{:?}", cave.max_simulate_excited());
     }
 
+    fn challenge_33() {
+        let data = io::input_as_grid(17);
+        let city = crucible::City::from_grid(&data);
+        println!("{:?}", city.least_path(1, 3));
+    }
+
+    fn challenge_34() {
+        let data = io::input_as_grid(17);
+        let city = crucible::City::from_grid(&data);
+        println!("{:?}", city.least_path(4, 10));
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -234,13 +247,15 @@ mod challenge {
             30 => challenge_30(),
             31 => challenge_31(),
             32 => challenge_32(),
+            33 => challenge_33(),
+            34 => challenge_34(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "32".to_string();
+    let default = "34".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
