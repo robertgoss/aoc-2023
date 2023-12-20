@@ -11,6 +11,7 @@ mod crucible;
 mod galaxy;
 mod hash;
 mod io;
+mod lake;
 mod map;
 mod mirrors;
 mod parts;
@@ -20,6 +21,7 @@ mod scratchcards;
 mod seeds;
 mod sequences;
 mod snow_game;
+mod utils;
 
 mod challenge {
     use super::*;
@@ -215,6 +217,12 @@ mod challenge {
         println!("{:?}", city.least_path(4, 10));
     }
 
+    fn challenge_35() {
+        let data = io::input_as_lines(18);
+        let path = lake::Path::from_lines(&data).unwrap();
+        println!("{:?}", path.area());
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -249,13 +257,14 @@ mod challenge {
             32 => challenge_32(),
             33 => challenge_33(),
             34 => challenge_34(),
+            35 => challenge_35(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "34".to_string();
+    let default = "35".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);

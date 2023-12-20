@@ -1,13 +1,8 @@
 use std::cmp::max;
 use std::collections::{HashMap, HashSet};
 
-#[derive(Clone, Copy, Eq, PartialEq, Hash)]
-enum Dir {
-    Up,
-    Down,
-    Right,
-    Left,
-}
+use super::utils::Dir;
+
 enum Mirror {
     DiagUR,
     DiagUL,
@@ -150,35 +145,6 @@ impl MirrorCave {
                 let (ni, nj) = dir.step(i, j);
                 next.push((ni, nj, dir));
             }
-        }
-    }
-}
-
-impl Dir {
-    fn step(&self, i: i64, j: i64) -> (i64, i64) {
-        match self {
-            Dir::Up => (i - 1, j),
-            Dir::Down => (i + 1, j),
-            Dir::Left => (i, j - 1),
-            Dir::Right => (i, j + 1),
-        }
-    }
-
-    fn diag_ul(&self) -> Dir {
-        match self {
-            Dir::Up => Dir::Left,
-            Dir::Down => Dir::Right,
-            Dir::Left => Dir::Up,
-            Dir::Right => Dir::Down,
-        }
-    }
-
-    fn diag_ur(&self) -> Dir {
-        match self {
-            Dir::Up => Dir::Right,
-            Dir::Down => Dir::Left,
-            Dir::Left => Dir::Down,
-            Dir::Right => Dir::Up,
         }
     }
 }

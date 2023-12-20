@@ -1,33 +1,7 @@
 use std::cmp::min;
 use std::collections::HashMap;
 
-#[derive(Clone, Copy, Eq, PartialEq, Hash)]
-enum Dir {
-    Up,
-    Down,
-    Right,
-    Left,
-}
-
-impl Dir {
-    fn step(&self, i: i64, j: i64) -> (i64, i64) {
-        match self {
-            Dir::Up => (i - 1, j),
-            Dir::Down => (i + 1, j),
-            Dir::Left => (i, j - 1),
-            Dir::Right => (i, j + 1),
-        }
-    }
-
-    fn turn(&self) -> [Dir; 2] {
-        match self {
-            Dir::Up => [Dir::Left, Dir::Right],
-            Dir::Down => [Dir::Left, Dir::Right],
-            Dir::Left => [Dir::Up, Dir::Down],
-            Dir::Right => [Dir::Up, Dir::Down],
-        }
-    }
-}
+use super::utils::Dir;
 
 pub struct City {
     blocks: HashMap<(i64, i64), u8>,
