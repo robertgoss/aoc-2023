@@ -22,6 +22,7 @@ mod seeds;
 mod sequences;
 mod snow_game;
 mod utils;
+mod workflow;
 
 mod challenge {
     use super::*;
@@ -223,6 +224,18 @@ mod challenge {
         println!("{:?}", path.area());
     }
 
+    fn challenge_37() {
+        let data = io::input_as_string(19);
+        let pile = workflow::Pile::from_string(&data).unwrap();
+        println!("{:?}", pile.accepted_ratings());
+    }
+
+    fn challenge_38() {
+        let data = io::input_as_string(19);
+        let pile = workflow::Pile::from_string(&data).unwrap();
+        println!("{:?}", pile.accepted_combos());
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -258,13 +271,15 @@ mod challenge {
             33 => challenge_33(),
             34 => challenge_34(),
             35 => challenge_35(),
+            37 => challenge_37(),
+            38 => challenge_38(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "35".to_string();
+    let default = "38".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);

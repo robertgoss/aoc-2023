@@ -1,7 +1,7 @@
 use crate::utils::Dir;
 use itertools::Itertools;
 use num::traits::FloatConst;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 struct Move {
     dir: Dir,
