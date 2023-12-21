@@ -20,6 +20,7 @@ mod race;
 mod scratchcards;
 mod seeds;
 mod sequences;
+mod signals;
 mod snow_game;
 mod utils;
 mod workflow;
@@ -236,6 +237,18 @@ mod challenge {
         println!("{:?}", pile.accepted_combos());
     }
 
+    fn challenge_39() {
+        let data = io::input_as_lines(20);
+        let mut network = signals::Network::from_lines(&data).unwrap();
+        println!("{:?}", network.count_signals(1000));
+    }
+
+    fn challenge_40() {
+        let data = io::input_as_lines(20);
+        let mut network = signals::Network::from_lines(&data).unwrap();
+        println!("{:?}", network.count_presses());
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -273,13 +286,15 @@ mod challenge {
             35 => challenge_35(),
             37 => challenge_37(),
             38 => challenge_38(),
+            39 => challenge_39(),
+            40 => challenge_40(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "38".to_string();
+    let default = "40".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
