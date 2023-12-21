@@ -22,6 +22,7 @@ mod seeds;
 mod sequences;
 mod signals;
 mod snow_game;
+mod steps;
 mod utils;
 mod workflow;
 
@@ -249,6 +250,12 @@ mod challenge {
         println!("{:?}", network.count_presses());
     }
 
+    fn challenge_41() {
+        let data = io::input_as_grid(21);
+        let map = steps::Map::from_grid(&data);
+        println!("{:?}", map.steps(64));
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -288,13 +295,14 @@ mod challenge {
             38 => challenge_38(),
             39 => challenge_39(),
             40 => challenge_40(),
+            41 => challenge_41(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "40".to_string();
+    let default = "41".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
