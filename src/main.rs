@@ -4,6 +4,7 @@
 extern crate core;
 
 mod beams;
+mod bricks;
 mod calibration;
 mod cards;
 mod cave;
@@ -256,6 +257,18 @@ mod challenge {
         println!("{:?}", map.steps(64));
     }
 
+    fn challenge_43() {
+        let data = io::input_as_lines(22);
+        let mut bricks = bricks::Bricks::from_lines(&data).unwrap();
+        println!("{:?}", bricks.disintergrate_count());
+    }
+
+    fn challenge_44() {
+        let data = io::input_as_lines(22);
+        let mut bricks = bricks::Bricks::from_lines(&data).unwrap();
+        println!("{:?}", bricks.maximum_chain());
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -296,13 +309,15 @@ mod challenge {
             39 => challenge_39(),
             40 => challenge_40(),
             41 => challenge_41(),
+            43 => challenge_43(),
+            44 => challenge_44(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "41".to_string();
+    let default = "44".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
