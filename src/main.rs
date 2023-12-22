@@ -83,8 +83,7 @@ mod challenge {
     }
 
     fn challenge_10() {
-        // TODO - Debug and fix
-        let data = io::input_as_string(0);
+        let data = io::input_as_string(5);
         let almanac = seeds::Almanac::from_string(&data).unwrap();
         println!("{:?}", almanac.least_site_ranges());
     }
@@ -317,7 +316,7 @@ mod challenge {
 }
 
 fn main() {
-    let default = "44".to_string();
+    let default = "10".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);

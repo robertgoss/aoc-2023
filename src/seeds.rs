@@ -74,21 +74,21 @@ impl RangeMap {
                     // Add direct map between
                     mapped.add(last_max_val, source - last_max_val);
                 }
-                let local_max = std::cmp::max(source + map_len, max);
+                let local_max = std::cmp::min(source + map_len, max);
                 // Add the mapped range
                 mapped.add(*dest, local_max - source);
                 last_max = Some(local_max);
             } else {
                 if *source > base {
                     mapped.add(base, source - base);
-                    let local_max = std::cmp::max(source + map_len, max);
+                    let local_max = std::cmp::min(source + map_len, max);
                     // Add the mapped range
                     mapped.add(*dest, local_max - source);
                     last_max = Some(local_max);
                 } else {
                     let offset = base - source;
                     // Add the mapped range
-                    let local_max = std::cmp::max(source + map_len, max);
+                    let local_max = std::cmp::min(source + map_len, max);
                     mapped.add(*dest + offset, local_max - base);
                     last_max = Some(local_max);
                 }
@@ -106,8 +106,8 @@ impl RangeMap {
 
     fn map_ranges(&self, ranges: &Ranges) -> Ranges {
         let mut mapped = Ranges::empty();
-        for (base, len) in &ranges.vals {
-            mapped.merge(&self.map_range(*base, *len))
+        for (base, max) in &ranges.vals {
+            mapped.merge(&self.map_range(*base, max - base))
         }
         mapped
     }
