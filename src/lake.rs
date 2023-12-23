@@ -1,7 +1,7 @@
 use crate::utils::Dir;
 use itertools::Itertools;
 use num::traits::FloatConst;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 struct Move {
     dir: Dir,
@@ -11,6 +11,14 @@ struct Move {
 pub struct Path {
     points: HashSet<(i64, i64)>,
     vertices: Vec<(i64, i64)>,
+}
+
+fn convert(map: &mut HashMap<(i64, i64), usize>, from: usize, to: usize) {
+    for v in map.values_mut() {
+        if *v == from {
+            *v = to;
+        }
+    }
 }
 
 impl Path {
@@ -37,40 +45,82 @@ impl Path {
     }
 
     pub fn area(&self) -> usize {
-        let (width, height) = self.max();
-        (0..=width)
-            .cartesian_product(0..=height)
-            .filter(|(i, j)| self.contains(*i, *j))
-            .count()
+        let areas = self.connected_areas();
+        let max = self.max();
+        let inner: usize = areas
+            .iter()
+            .filter(|area| !area.contains(&max))
+            .map(|area| area.len())
+            .sum();
+        inner + self.points.len()
+    }
+
+    fn connected_areas(&self) -> Vec<HashSet<(i64, i64)>> {
+        let mut area_nums: HashSet<usize> = HashSet::new();
+        let mut area_map: HashMap<(i64, i64), usize> = HashMap::new();
+        let max = self.max();
+        let min = self.min();
+        let mut num = 0_usize;
+        for i in min.0 - 1..=max.0 + 1 {
+            for j in min.1 - 1..=max.1 + 1 {
+                if !self.points.contains(&(i, j)) {
+                    area_map.insert((i, j), num);
+                    area_nums.insert(num);
+                    num += 1;
+                }
+            }
+        }
+        // Deduplicate
+        for i in min.0 - 1..=max.0 + 1 {
+            for j in min.0 - 1..=max.1 + 1 {
+                if let Some(&num_base) = area_map.get(&(i, j)) {
+                    if let (Some(&num_up), Some(&num_left)) =
+                        (area_map.get(&(i - 1, j)), area_map.get(&(i, j - 1)))
+                    {
+                        // Merge
+                        if num_up != num_left {
+                            convert(&mut area_map, num_up, num_left);
+                            area_nums.remove(&num_up);
+                        }
+                        area_map.insert((i, j), num_left);
+                        area_nums.remove(&num_base);
+                    } else {
+                        if let Some(&num_up) = area_map.get(&(i - 1, j)) {
+                            area_map.insert((i, j), num_up);
+                            area_nums.remove(&num_base);
+                        } else if let Some(&num_left) = area_map.get(&(i, j - 1)) {
+                            area_map.insert((i, j), num_left);
+                            area_nums.remove(&num_base);
+                        }
+                    }
+                }
+            }
+        }
+        // Get common
+        let mut areas = Vec::new();
+        for i in area_nums {
+            let mut area: HashSet<(i64, i64)> = HashSet::new();
+            for (ind, v) in area_map.iter() {
+                if *v == i {
+                    area.insert(*ind);
+                }
+            }
+            areas.push(area);
+        }
+        println!("{} {:?} {:?}", areas.len(), max, min);
+        areas
     }
 
     fn max(&self) -> (i64, i64) {
-        let x = self.points.iter().map(|(x, _)| *x).max().unwrap_or(1);
-        let y = self.points.iter().map(|(_, y)| *y).max().unwrap_or(1);
+        let x = self.points.iter().map(|(x, _)| x + 1).max().unwrap_or(1);
+        let y = self.points.iter().map(|(_, y)| y + 1).max().unwrap_or(1);
         (x, y)
     }
 
-    fn contains(&self, i: i64, j: i64) -> bool {
-        if self.points.contains(&(i, j)) {
-            return true;
-        }
-        let mut winding: f64 = 0.0;
-        let mut prev_angle: Option<f64> = None;
-        for point in &self.vertices {
-            let vec = ((point.0 - i) as f64, (point.1 - j) as f64);
-            let angle = f64::atan2(vec.1, vec.0);
-            if let Some(prev_val) = prev_angle {
-                let mut diff = angle - prev_val;
-                if diff > f64::PI() {
-                    diff -= 2.0 * f64::PI();
-                } else if diff < -f64::PI() {
-                    diff += 2.0 * f64::PI();
-                }
-                winding += diff;
-            }
-            prev_angle = Some(angle);
-        }
-        return winding.abs() > 1e-6;
+    fn min(&self) -> (i64, i64) {
+        let x = self.points.iter().map(|(x, _)| x - 1).min().unwrap_or(1);
+        let y = self.points.iter().map(|(_, y)| y - 1).min().unwrap_or(1);
+        (x, y)
     }
 }
 
