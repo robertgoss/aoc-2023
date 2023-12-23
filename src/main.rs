@@ -25,6 +25,7 @@ mod signals;
 mod snow_game;
 mod steps;
 mod utils;
+mod walk;
 mod workflow;
 
 mod challenge {
@@ -268,6 +269,18 @@ mod challenge {
         println!("{:?}", bricks.maximum_chain());
     }
 
+    fn challenge_45() {
+        let data = io::input_as_grid(23);
+        let woods = walk::Woods::from_grid(&data);
+        println!("{:?}", woods.maximum_path(false));
+    }
+
+    fn challenge_46() {
+        let data = io::input_as_grid(23);
+        let woods = walk::Woods::from_grid(&data);
+        println!("{:?}", woods.maximum_path(true));
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -310,13 +323,15 @@ mod challenge {
             41 => challenge_41(),
             43 => challenge_43(),
             44 => challenge_44(),
+            45 => challenge_45(),
+            46 => challenge_46(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "10".to_string();
+    let default = "46".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
