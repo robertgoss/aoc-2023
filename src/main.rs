@@ -331,7 +331,7 @@ mod challenge {
 }
 
 fn main() {
-    let default = "46".to_string();
+    let default = "20".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);

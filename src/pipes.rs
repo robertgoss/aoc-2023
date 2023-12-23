@@ -1,3 +1,5 @@
+use itertools::Itertools;
+use num::traits::FloatConst;
 use std::collections::{HashMap, HashSet};
 
 #[derive(PartialEq, Eq)]
@@ -71,6 +73,7 @@ impl Pipe {
 pub struct Pipes {
     pipes: HashMap<(i64, i64), Pipe>,
     max_i: i64,
+    max_j: i64,
 }
 
 impl Pipes {
@@ -80,7 +83,12 @@ impl Pipes {
             .filter_map(|((i, j), ch)| Pipe::from_char(*ch).map(|pipe| ((*i, *j), pipe)))
             .collect();
         let max_i = pipes.keys().map(|(i, _)| *i).max().unwrap_or(0);
-        Pipes { pipes, max_i }
+        let max_j = pipes.keys().map(|(_, j)| *j).max().unwrap_or(0);
+        Pipes {
+            pipes,
+            max_i,
+            max_j,
+        }
     }
 
     fn start(&self) -> (i64, i64) {
@@ -115,25 +123,92 @@ impl Pipes {
     }
 
     pub fn enclosed(&self) -> usize {
-        let (_, pipe_loop) = self.pipe_loop();
-        self.pipes
-            .keys()
-            .filter(|(i, j)| self.inside_loop(*i, *j, &pipe_loop))
+        let (_, pipe_set) = self.pipe_loop();
+        let pipe_loop = self.pipe_loop_ordered();
+        //assert_eq!(pipe_set.len(), pipe_loop.len() - 1);
+        (0..=self.max_i)
+            .cartesian_product(0..=self.max_j)
+            .filter(|(i, j)| !pipe_set.contains(&(*i, *j)) && self.inside_loop(*i, *j, &pipe_loop))
             .count()
     }
 
-    fn inside_loop(&self, i: i64, j: i64, pipe_loop: &HashSet<(i64, i64)>) -> bool {
-        if pipe_loop.contains(&(i, j)) {
-            return false;
+    fn pipe_loop_ordered(&self) -> Vec<(i64, i64)> {
+        let mut ordered = Vec::new();
+        let start = self.start();
+        let mut prev = start;
+        let mut curr = self.next(prev, None);
+        ordered.push(start);
+        while curr != start {
+            ordered.push(curr);
+            let next = self.next(curr, Some(prev));
+            prev = curr;
+            curr = next;
         }
-        let mut sign = false;
-        for k in (i + 1)..=self.max_i {
-            // Need more complex state machine to deal with vertical stacks!
-            if pipe_loop.contains(&(k, j)) {
-                sign = !sign;
+        ordered.push(curr);
+        ordered
+    }
+
+    fn next(&self, (i, j): (i64, i64), prev: Option<(i64, i64)>) -> (i64, i64) {
+        let mut vec: Vec<(i64, i64)> = Vec::new();
+        match self.pipes.get(&(i, j)).unwrap() {
+            Pipe::Start => {
+                vec = self.connected(i, j);
+            }
+            Pipe::NS => {
+                vec.push((i + 1, j));
+                vec.push((i - 1, j));
+            }
+            Pipe::EW => {
+                vec.push((i, j + 1));
+                vec.push((i, j - 1));
+            }
+            Pipe::NE => {
+                vec.push((i - 1, j));
+                vec.push((i, j + 1));
+            }
+            Pipe::NW => {
+                vec.push((i - 1, j));
+                vec.push((i, j - 1));
+            }
+            Pipe::SE => {
+                vec.push((i + 1, j));
+                vec.push((i, j + 1));
+            }
+            Pipe::SW => {
+                vec.push((i + 1, j));
+                vec.push((i, j - 1));
             }
         }
-        sign
+        assert_eq!(vec.len(), 2);
+        if let Some(prev_i) = prev {
+            if vec[0] == prev_i {
+                vec[1]
+            } else {
+                vec[0]
+            }
+        } else {
+            vec[0]
+        }
+    }
+
+    fn inside_loop(&self, i: i64, j: i64, pipe_loop: &Vec<(i64, i64)>) -> bool {
+        let mut winding: f64 = 0.0;
+        let mut prev_angle: Option<f64> = None;
+        for point in pipe_loop.iter() {
+            let vec = ((point.0 - i) as f64, (point.1 - j) as f64);
+            let angle = f64::atan2(vec.1, vec.0);
+            if let Some(prev_val) = prev_angle {
+                let mut diff = angle - prev_val;
+                if diff > f64::PI() {
+                    diff -= 2.0 * f64::PI();
+                } else if diff < -f64::PI() {
+                    diff += 2.0 * f64::PI();
+                }
+                winding += diff;
+            }
+            prev_angle = Some(angle);
+        }
+        return winding.abs() > 1e-6;
     }
 
     fn connected_union(&self, elems: &HashSet<(i64, i64)>) -> HashSet<(i64, i64)> {
