@@ -10,6 +10,7 @@ mod cards;
 mod cave;
 mod crucible;
 mod galaxy;
+mod hail;
 mod hash;
 mod io;
 mod lake;
@@ -281,6 +282,15 @@ mod challenge {
         println!("{:?}", woods.maximum_path(true));
     }
 
+    fn challenge_47() {
+        let data = io::input_as_lines(24);
+        let storm = hail::Storm::from_lines(&data).unwrap();
+        println!(
+            "{:?}",
+            storm.intersect_in_area(200000000000000, 400000000000000 + 1)
+        );
+    }
+
     pub fn challenge(num: u8) {
         match num {
             1 => challenge_1(),
@@ -325,13 +335,14 @@ mod challenge {
             44 => challenge_44(),
             45 => challenge_45(),
             46 => challenge_46(),
+            47 => challenge_47(),
             _ => (),
         }
     }
 }
 
 fn main() {
-    let default = "35".to_string();
+    let default = "47".to_string();
     let args: Vec<String> = std::env::args().collect();
     let ver = args.get(1).unwrap_or(&default).parse::<u8>().unwrap();
     challenge::challenge(ver);
